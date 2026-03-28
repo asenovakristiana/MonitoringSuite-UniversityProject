@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Peaks</title>
+
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+
+        .overlay {
+            background: rgba(0,0,0,0.55);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .menu-buttons {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .center-box {
+            width: 90%;
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 35px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .title {
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #ddd;
+            text-align: center;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+<div class="menu-buttons">
+    <h:form>
+        <p:commandButton value="Табло" icon="ui-icon ui-icon-gear"
+                         action="/secured/dashboard?faces-redirect=true"/>
+
+        <p:commandButton value="Сървъри" icon="ui-icon ui-icon-search"
+                                 action="/secured/servers?faces-redirect=true"/>
+
+        <p:commandButton value="Изход" icon="ui-icon ui-icon-power"
+                         action="#{loginBean.doLogout}"/>
+    </h:form>
+</div>
+
+<div class="overlay"></div>
+
+<div class="center-box">
+
+    <div class="title">Събития с високо натоварване</div>
+    <div class="subtitle">Автоматично засечени критични стойности</div>
+
+    <h:form>
+        <p:dataTable value="#{monitorBean.peaks}" var="p"
+                     paginator="true" rows="20"
+                     style="background: rgba(0,0,0,0.3); color:white;">
+
+            <p:column headerText="Време">
+                <h:outputText value="#{p.timestamp}">
+                <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss" />
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Сървър">
+                <h:outputText value="#{p.serverName}" />
+            </p:column>
+
+            <p:column headerText="Метрика">
+                <h:outputText value="#{p.metric}" />
+            </p:column>
+
+            <p:column headerText="Стойност">
+                <h:outputText value="#{p.value}" />
+            </p:column>
+
+            <p:column headerText="Описание">
+                <h:outputText value="#{p.description}" />
+            </p:column>
+
+        </p:dataTable>
+    </h:form>
+
+</div>
+
+</h:body>
+</html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Сървър</title>
+</h:head>
+
+<h:body>
+
+<h:form id="form">
+    <div class="container">
+
+        <div class="menu-buttons">
+            <h:form>
+                <p:commandButton value="Табло" icon="ui-icon ui-icon-gear"
+                                 action="/secured/dashboard?faces-redirect=true"/>
+                
+                <p:commandButton value="Сървъри" icon="ui-icon ui-icon-search"
+                                 action="/secured/servers?faces-redirect=true"/>
+
+                <p:commandButton value="Събития с високо натоварване" icon="ui-icon ui-icon-alert"
+                                 action="/secured/peaks?faces-redirect=true"/>
+
+                <p:commandButton value="Изход" icon="ui-icon ui-icon-power"
+                                 action="#{loginBean.doLogout}"/>
+            </h:form>
+        </div>
+    </div>
+
+    <f:metadata>
+        <f:viewParam name="name" value="#{monitorBean.selectedServerName}" />
+        <f:event type="preRenderView" listener="#{monitorBean.loadSingleServer}" />
+    </f:metadata>
+
+    <h2>Сървър: #{monitorBean.selectedServerName}</h2>
+
+    <p:chart type="line"
+             model="#{monitorBean.singleCpuChart}"
+             style="width:100%; height:250px;" />
+
+    <p:chart type="line"
+             model="#{monitorBean.singleRamChart}"
+             style="width:100%; height:250px;" />
+
+    <p:chart type="line"
+             model="#{monitorBean.singleReqChart}"
+             style="width:100%; height:250px;" />
+
+    <p:dataTable value="#{monitorBean.singleServerMetrics}" var="m">
+        <p:column headerText="Време">
+            <h:outputText value="#{m.timestamp}">
+                <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss"
+                           type="both"
+                           timeZone="Europe/Sofia"/>
+            </h:outputText>
+        </p:column>
+        <p:column headerText="CPU %">#{m.cpu}</p:column>
+        <p:column headerText="RAM %">#{m.ram}</p:column>
+        <p:column headerText="Req/s">#{m.reqPerSec}</p:column>
+    </p:dataTable>
+
+</h:form>
+
+</h:body>
+</html>
+

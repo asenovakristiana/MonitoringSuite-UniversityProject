@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+
+        .overlay {
+            background: rgba(0,0,0,0.55);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .menu-buttons {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .center-box {
+            width: 95%;
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 35px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .title {
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #ddd;
+            text-align: center;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+<div class="menu-buttons">
+    <h:form>
+        <p:commandButton value="Сървъри" icon="ui-icon ui-icon-search"
+                                 action="/secured/servers?faces-redirect=true"/>
+
+        <p:commandButton value="Събития с високо натоварване" icon="ui-icon ui-icon-alert"
+                         action="/secured/peaks?faces-redirect=true"/>
+
+        <p:commandButton value="Изход" icon="ui-icon ui-icon-power"
+                         action="#{loginBean.doLogout}"/>
+    </h:form>
+</div>
+
+<div class="overlay"></div>
+
+<div class="center-box">
+
+    <div class="title">Dashboard</div>
+    <div class="subtitle">Реално време мониторинг на сървърите</div>
+
+    <h:form id="form">
+
+        <p:poll interval="5"
+                listener="#{monitorBean.refresh}"
+                update="cpuChart ramChart reqChart table"/>
+
+        <h:panelGrid columns="3" style="width:100%; margin-bottom:20px">
+
+            <p:panel header="CPU натоварване (%)">
+                <div style="text-align:center; color:white; margin-bottom:5px;">
+                    0 | ½ час | 1 час | 1½ часа | 2 часа | 2½ часа | 3 часа | 3½ часа | 4 часа
+                </div>
+                <p:chart id="cpuChart"
+                    type="line"
+                    model="#{monitorBean.cpuChart}"
+                    style="width:100%;height:250px"/>
+            </p:panel>
+
+            <p:panel header="RAM използване (%)">
+                <div style="text-align:center; color:white; margin-bottom:5px;">
+                    0 | ½ час | 1 час | 1½ часа | 2 часа | 2½ часа | 3 часа | 3½ часа | 4 часа
+                </div>
+                <p:chart id="ramChart"
+                    type="line"
+                    model="#{monitorBean.ramChart}"
+                    style="width:100%;height:250px"/>
+            </p:panel>
+
+            <p:panel header="Заявки в секунда (Req/s)">
+                <div style="text-align:center; color:white; margin-bottom:5px;">
+                    0 | ½ час | 1 час | 1½ часа | 2 часа | 2½ часа | 3 часа | 3½ часа | 4 часа
+                </div>
+                <p:chart id="reqChart"
+                    type="line"
+                    model="#{monitorBean.reqChart}"
+                    style="width:100%;height:250px"/>
+            </p:panel>
+
+        </h:panelGrid>
+
+        <p:dataTable id="table" value="#{monitorBean.tableData}" var="m"
+                     paginator="true" rows="20"
+                     style="background: rgba(0,0,0,0.3); color:white;">
+
+            <p:column headerText="Време">
+                <h:outputText value="#{m.timestamp}">
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss"
+                                       type="both"
+                                       timeZone="Europe/Sofia"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Сървър">
+                <h:outputText value="#{m.serverName}" />
+            </p:column>
+
+            <p:column headerText="Тип">
+                <h:outputText value="#{m.type}" />
+            </p:column>
+
+            <p:column headerText="Active">
+                <h:outputText value="#{m.activeConnections}" />
+            </p:column>
+
+            <p:column headerText="Req/s">
+                <h:outputText value="#{m.reqPerSec}" />
+            </p:column>
+
+            <p:column headerText="CPU %">
+                <h:outputText value="#{m.cpu}" />
+            </p:column>
+
+            <p:column headerText="RAM %">
+                <h:outputText value="#{m.ram}" />
+            </p:column>
+
+            <p:column headerText="4xx">
+                <h:outputText value="#{m.errors4xx}" />
+            </p:column>
+
+            <p:column headerText="5xx">
+                <h:outputText value="#{m.errors5xx}" />
+            </p:column>
+
+        </p:dataTable>
+
+    </h:form>
+
+</div>
+
+</h:body>
+</html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Monitoring Suite – Home</title>
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: Arial, sans-serif;
+            background-image: url("#{resource['images/background.png']}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: 80px auto;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #666;
+        }
+        .menu-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <div class="title">Monitoring Suite</div>
+        <div class="subtitle">Изберете секция от менюто</div>
+
+        <div class="menu-buttons">
+            <h:form>
+                <p:commandButton value="Табло" icon="ui-icon ui-icon-gear"
+                                 action="/secured/dashboard?faces-redirect=true"/>
+
+                <p:commandButton value="Сървъри" icon="ui-icon-plus"
+                                 action="/secured/servers?faces-redirect=true"/>
+
+                <p:commandButton value="Събития с високо натоварване" icon="ui-icon ui-icon-alert"
+                                 action="/secured/peaks?faces-redirect=true"/>
+
+                <p:commandButton value="Изход" icon="ui-icon ui-icon-power"
+                                 action="#{loginBean.doLogout}"/>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>
